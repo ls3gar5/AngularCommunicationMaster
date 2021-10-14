@@ -17,3 +17,6 @@ npm install -g rxjs-tslint
 npm install rxjs-compat --save-dev
 
 ng build => you´ll see the different error for the beanking change.
+
+Move to 6 to 7
+ng update @angular/cli@7 @angular/core@7
