@@ -20,4 +20,6 @@ ng build => you´ll see the different error for the beanking change.
 
 Move to 6 to 7
 
+rm -rf node_modules
+
 ng update @angular/cli@7 @angular/core@7
