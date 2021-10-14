@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
-import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { of } from 'rxjs/observable/of';
 
 import { catchError, tap } from 'rxjs/operators';
@@ -16,11 +15,11 @@ export class ProductService {
     constructor(private http: HttpClient) { }
 
     getProducts(): Observable<IProduct[]> {
-        return this.http.get<IProduct[]>(this.productsUrl)
-                        .pipe(
-                            tap(data => console.log(JSON.stringify(data))),
-                            catchError(this.handleError)
-                        );
+        const listProduct = this.http.get<IProduct[]>(this.productsUrl)
+            .pipe(
+                tap(data => console.log(JSON.stringify(data))),
+            );
+        return listProduct;
     }
 
     getProduct(id: number): Observable<IProduct> {
@@ -30,8 +29,7 @@ export class ProductService {
         const url = `${this.productsUrl}/${id}`;
         return this.http.get<IProduct>(url)
                         .pipe(
-                            tap(data => console.log('Data: ' + JSON.stringify(data))),
-                            catchError(this.handleError)
+                            tap(data => console.log('Data: ' + JSON.stringify(data)))
                         );
     }
 
@@ -50,7 +48,7 @@ export class ProductService {
         return this.http.delete<IProduct>(url, { headers: headers} )
                         .pipe(
                             tap(data => console.log('deleteProduct: ' + id)),
-                            catchError(this.handleError)
+                            catchError(err => {throw this.handleError} )
                         );
     }
 
@@ -59,7 +57,7 @@ export class ProductService {
         return this.http.post<IProduct>(this.productsUrl, product,  { headers: headers} )
                         .pipe(
                             tap(data => console.log('createProduct: ' + JSON.stringify(data))),
-                            catchError(this.handleError)
+                            catchError(err => {throw this.handleError} )
                         );
     }
 
@@ -68,7 +66,7 @@ export class ProductService {
         return this.http.put<IProduct>(url, product, { headers: headers} )
                         .pipe(
                             tap(data => console.log('updateProduct: ' + product.id)),
-                            catchError(this.handleError)
+                            catchError(err => {throw this.handleError(err)} )
                         );
     }
 
@@ -88,10 +86,10 @@ export class ProductService {
         };
     }
 
-    private handleError(err: HttpErrorResponse): ErrorObservable {
+    private handleError(err: HttpErrorResponse): string{
         // in a real world app, we may send the server to some remote logging infrastructure
         // instead of just logging it to the console
-        let errorMessage: string;
+        let errorMessage = '';
         if (err.error instanceof Error) {
             // A client-side or network error occurred. Handle it accordingly.
             errorMessage = `An error occurred: ${err.error.message}`;
@@ -101,7 +99,7 @@ export class ProductService {
             errorMessage = `Backend returned code ${err.status}, body was: ${err.error}`;
         }
         console.error(err);
-        return new ErrorObservable(errorMessage);
+        return errorMessage;
     }
 
 }
