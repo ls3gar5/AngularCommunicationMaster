@@ -10,7 +10,7 @@ import { ProductService } from '../product.service';
     styleUrls: ['./product-edit.component.css']
 })
 export class ProductEditComponent implements OnInit {
-    @ViewChild(NgForm) editForm: NgForm;
+    @ViewChild(NgForm, { static: true }) editForm: NgForm;
     pageTitle: string = 'Product Edit';
     errorMessage: string;
     private originalProduct: IProduct;
